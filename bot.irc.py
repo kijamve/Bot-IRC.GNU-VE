@@ -4,8 +4,12 @@ import re
 import urllib2
 import json
 from random import choice
-import signal, os
+import signal, os, sys
 
+fpid = os.fork()
+if fpid!=0:
+  # Running as daemon now. PID is fpid
+  sys.exit(0)
 
 signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
