@@ -7,9 +7,7 @@ from random import choice
 import signal, os
 
 
-def handler(signum, frame):
-    print 'Signal handler: ', signum
-signal.signal(signal.SIGHUP, handler)
+signal.signal(signal.SIGHUP, signal.SIG_IGN)
 
 HOST="irc.radiognu.org"
 PORT=6667
