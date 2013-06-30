@@ -1,10 +1,15 @@
 import socket
 import string
 import re
-import sqlite3
 import urllib2
 import json
 from random import choice
+import signal, os
+
+
+def handler(signum, frame):
+    print 'Signal handler: ', signum
+signal.signal(signal.SIGHUP, handler)
 
 HOST="irc.radiognu.org"
 PORT=6667
