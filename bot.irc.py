@@ -54,13 +54,13 @@ while 1:
 				r5 = data["/radiometagnuam.ogg"]
 				r6 = data["/radiognuam.ogg"]
 				escuchas = r1["escuchas"] + r2["escuchas"] + r3["escuchas"] + r4["escuchas"] + r5["escuchas"] + r6["escuchas"]
-				send_msg("%s de %s nos esta durmiendonos, solo %d personas los escucha :(" % (r3["titulo"], r3["artista"], escuchas))
+				send_msg("%s de %s nos esta durmiendo, solo %d personas los escucha :(" % (r3["titulo"], r3["artista"], escuchas))
 			
 			if msg.find("estoy aburrido") != -1:
 				n = choice(USERS)
 				while n==nick:
 					n = choice(USERS)
-				send_msg("%s te recomiendo que le escribas a %s, el tambien se aburre mucho en este canal tan aburrido XD"%(nick, n))
+				send_msg("%s te recomiendo que le escribas a %s, el tambien se aburre mucho en este canal"%(nick, n))
 			print "%s dijo: %s\n" %(nick, msg)
 			wmsg = msg.split()
 		elif lineSplit[1] == "NICK":
