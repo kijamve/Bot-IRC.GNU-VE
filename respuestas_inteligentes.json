@@ -17,7 +17,7 @@
 	{
 		"patron": "!hablaclaro",
 		"mencion": true,
-		"respuesta": "__NICK__ Yo no me dejaría hacer un !hablaclaro si fuera tu"
+		"respuesta": "__MENCION__ Yo no me dejaría hacer un !hablaclaro si fuera tu"
 	},
 	{
 		"patron": "programar",
