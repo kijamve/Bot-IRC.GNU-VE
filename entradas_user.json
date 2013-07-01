@@ -1,8 +1,10 @@
 [
-	"Bienvenido %s, te recomiendo que le escribas a %s se siente muy solo en este canal",
-	"%s no le debes escribir a %s, tiene problemas sociales, se cree Geek",
-	"%s y %s hacen buena pareja, creo que puedes escribirle un rato para ver si hay corazon",
-	"%s espero que no seas tan aburrido como %s, el nunca escribe nada coherente",
-	"Hola %s, espero que estes escuchando Radio GNU si no Gnoll se molestara contigo (Se cree mejor que yo solo porque tiene super poderes en este canal :O)",
-	"Hola %s"
+	"Bienvenido __NICK__, te recomiendo que le escribas a __RNICK__ se siente muy solo en este canal",
+	"__NICK__ no le debes escribir a __RNICK__, tiene problemas sociales, se cree Geek",
+	"__RNICK__ y __NICK__ hacen buena pareja, creo que puedes escribirle un rato para ver si hay corazon",
+	"__NICK__ espero que no seas tan aburrido como __RNICK__, el nunca escribe nada coherente",
+	"Hola __NICK__, espero que estes escuchando Radio GNU si no Gnoll se molestara contigo (Se cree mejor que yo solo porque tiene super poderes en este canal :O)",
+	"Hola __NICK__",
+	"otro mas... este canal no tiene un limite?",
+	"____NICK____: solo yo tengo el valor de decirtelo: no te queremos aca"
 ]

@@ -6,14 +6,15 @@ import json
 from random import choice
 import os, sys
 import threading 
+import time 
+import codecs
 
-fpid = os.fork()
-if fpid!=0:
-  # Running as daemon now. PID is fpid
-  sys.exit(0)
+#fpid = os.fork()
+#if fpid!=0:
+#  sys.exit(0)
 
-sys.stdout = open('out.log', 'w+')
-sys.stderr = open('err.log', 'w+')
+#sys.stdout = open('out.log', 'w+')
+#sys.stderr = open('err.log', 'w+')
 HOST="irc.radiognu.org"
 PORT=6667
 NICK="SuperB"
@@ -24,16 +25,13 @@ USERS = []
 
 def loadJson(name):
 	lines = ""
-	with open(name, "r") as f:
+	with codecs.open(name, 'rb', 'utf-8') as f:
 		for line in f:
 			lines+= line
-	return json.load(lines) 
+	return json.loads(lines.encode('utf-8')) 
 
 entradas_bot = loadJson("entradas_bot.json")
 entradas_user = loadJson("entradas_user.json")
-entradas = loadJson("salidas.json")
-chat_idle = loadJson("chat_idle.json")
-menciones = loadJson("menciones.json")
 resp_ia	= loadJson("respuestas_inteligentes.json")
 salidas_user = loadJson("salidas_user.json")
 cambio_nick = loadJson("cambio_nick.json")
@@ -45,25 +43,15 @@ s.connect((HOST, PORT))
 s.send("NICK %s\r\n" % NICK)
 s.send("USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME))
 s.send("JOIN :%s\r\n" % CHAN)
-lock = Lock()
+lock = threading.Lock()
 
 def send_msg(msg):
+	print "Enviando: %s" % msg
 	lock.acquire()
-	s.send("PRIVMSG %s :%s\r\n" % (CHAN, msg))
+	s.send(("PRIVMSG %s :%s\r\n".encode('utf-8') % (CHAN, msg)).encode('utf-8'))
 	lock.release()
-	print "se envio: %s" % msg
+	print "Enviado"
 	
-class AutoBot(threading.Thread):  
-	def __init__(self, num):  
-	  threading.Thread.__init__(self)  
-	  self.num = num  
-
-	def run(self):  
-	while 1:
-		sleep(10)
-t = AutoBot(1)  
-t.start()  
-
 def getRadioGNU():
 	response = urllib2.urlopen("http://audio.radiognu.org/json.xsl")
 	data = json.load(response) 
@@ -74,8 +62,22 @@ def getRadioGNU():
 	r5 = data["/radiometagnuam.ogg"]
 	r6 = data["/radiognuam.ogg"]
 	escuchas = r1["escuchas"] + r2["escuchas"] + r3["escuchas"] + r4["escuchas"] + r5["escuchas"] + r6["escuchas"]
-	return {"titulo": r3["titulo"], "artista": r3["artista"], "escuchas": escuchas}
+	return {"titulo": r3["titulo"], "artista": r3["artista"], "escuchas": "%d"%escuchas}
 	
+class AutoBot(threading.Thread):  
+	def __init__(self, num):  
+	  threading.Thread.__init__(self)  
+	  self.num = num  
+
+	def run(self):  
+		while 1:
+			time.sleep(10*60)
+			radio = getRadioGNU()
+			send_msg(choice(radiognu).replace("__TITULO__",radio["titulo"]).replace("__ARTISTA__", radio["artista"]).replace("__ESCUCHAS__", radio["escuchas"]))
+
+t = AutoBot(1)  
+t.start()  
+
 while 1:
 	readbuffer=readbuffer+s.recv(1024)
 	temp=string.split(readbuffer, "\n")
@@ -93,38 +95,53 @@ while 1:
 				m = re.search("([a-zA-Z0-9_-]+)", u)
 				if m:
 					USERS.append(m.group(0))
-			send_msg(choice(entradas_bot) % len(USERS))
+			send_msg(choice(entradas_bot).replace("__CONECTADOS__", "%d"%len(USERS)))
 		elif lineSplit[1] == "PRIVMSG":
-			if(nick=="Gnoll") continue  #Evitemos que los bot se respondan entre si, se pueden quedar pegados.
+			if(nick=="Gnoll"):
+				continue  #Evitemos que los bot se respondan entre si, se pueden quedar pegados.
 			m = re.search("(:[^:]+:)(.*)", line)
 			msg = m.group(2).strip()
 			wmsg = msg.split()
-			
-			if msg.find("radiognu") != -1:
-				radio = getRadioGNU()
-				send_msg(choice(radiognu) % (radio["titulo"], radio["artista"], radio["escuchas"]))
-			else:
-				mencion = false
-				for p in wmsg:
-					palabra = re.search("([a-zA-Z0-9_-]+)", p).group(0)
-					if palabra in USERS
+			mencion = None
+			for p in wmsg:
+				palabra = re.search("([a-zA-Z0-9_-]+)", p)
+				if(palabra):
+					palabra = palabra.group(0)
+					if palabra in USERS:
 						mencion = palabra
 						break
-				op = []
-				for op in resp_ia
-				send_msg("%s te recomiendo que le escribas a %s, el tambien se aburre mucho en este canal"%(nick, n))
+			if(mencion):
+				print "%s fue mencionado"%mencion
+			op = []
+			for r in resp_ia:
+				if((mencion and r["mencion"]) or (not r["mencion"])):
+					if(re.search(r["patron"], msg.lower(), re.IGNORECASE)):
+						print "Encontrado %s"%r["respuesta"]
+						op.append(r["respuesta"])
+					else:
+						print "Patron '%s' no encontrado"%r["patron"]
+
+			rnick=choice(USERS)	
+			while(rnick==nick):
+				rnick=choice(USERS)
+			if(len(op)>0):
+				if(mencion):
+					send_msg(choice(op).replace("__MENCION__", mencion).replace("__NICK__", nick).replace("__RNICK__", rnick));
+				else:
+					send_msg(choice(op).replace("__NICK__", nick).replace("__RNICK__", rnick));
 			print "%s dijo: %s\n" %(nick, msg)
 		elif lineSplit[1] == "NICK":
 			m = re.search("(:[^:]+:)(.*)", line)
 			msg = m.group(2).strip()
 			USERS.append(msg)
 			USERS.remove(nick)
-			send_msg(choice(cambio_nick)%(msg, nick))
+			send_msg(choice(cambio_nick).replace("__NICK_ANT__", nick).replace("__NEW_NICK__", msg))
 		elif lineSplit[1] == "JOIN":
-			send_msg(choice(entradas_user)%(nick, choice(USERS)))
+			if(len(USERS)>2):
+				send_msg(choice(entradas_user).replace("__NICK__", nick).replace("__RNICK__", choice(USERS)))
 			USERS.append(nick)
 		elif lineSplit[1] == "QUIT":
-			send_msg(choice(salidas_user)%nick)
+			#send_msg(choice(salidas_user).replace("__NICK__", nick))
 			USERS.remove(nick)
 		else:
 			print "UNK: %s\n" % line

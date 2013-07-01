@@ -1,0 +1,27 @@
+[
+	{
+		"patron": "idiota",
+		"mencion": true,
+		"respuesta": "__MENCION__ creo que te dijeron idiota, yo no me la calaria jaja"
+	},
+	{
+		"patron": "bolsa",
+		"mencion": true,
+		"respuesta": "__MENCION__ creo que __NICK__ te dijo bolsa, deberias acusarlo con Gnoll XD"
+	},
+	{
+		"patron": "privativo",
+		"mencion": false,
+		"respuesta": "__NICK__ yo uso Windows y me gusta el software privativo, algun problema? XD"
+	},
+	{
+		"patron": "!hablaclaro",
+		"mencion": true,
+		"respuesta": "__NICK__ Yo no me dejaría hacer un !hablaclaro si fuera tu"
+	},
+	{
+		"patron": "programar",
+		"mencion": true,
+		"respuesta": "Yo se programar más que todo el mundo: PHP, Python, Ruby, PASCAL, Binario, C, COBOL, Visual Basic, C#, Bash , Java, C++, ASP.NET, Ensamblador y otros"
+	}
+]

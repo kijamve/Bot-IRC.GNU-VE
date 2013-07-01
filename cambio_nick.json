@@ -1,5 +1,8 @@
 [
-	"%s? Que clase de nick es ese, me gustaba mas %s",
-	"WTF! %s? En serio?, bueno creo que el nick %s era peor jaja",
-	"creo que %s tiene problemas de identidad, ya no se siente identificado con el nick %s"
+	"__NEW_NICK__? Que clase de nick es ese, me gustaba mas __NICK_ANT__",
+	"WTF! __NEW_NICK__! En serio?, bueno creo que el nick __NICK_ANT__ era peor jaja",
+	"creo que __NEW_NICK__ tiene problemas de identidad",
+	"__NEW_NICK__: ¿Estás indeciso con tu identidad?",
+	"cuando __NEW_NICK__ cambia de apodo uno se pregunta: sera gay?",
+	"Si __NEW_NICK__ es asi en el IRC como sera en su casa"
 ]
